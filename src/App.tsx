@@ -39,6 +39,16 @@ function App() {
     setShouldReplaceDisplay(false);
   }, [shouldReplaceDisplay]);
 
+  const onDecimal = useCallback(() => {
+    setDisplayValue((prev) => {
+      if (prev === 'Error') return '0.';
+      if (shouldReplaceDisplay) return '0.';
+      if (prev.includes('.')) return prev;
+      return prev + '.';
+    });
+    setShouldReplaceDisplay(false);
+  }, [shouldReplaceDisplay]);
+
   const onOperator = useCallback((op: Op) => {
     const current = parseFloat(displayValue);
     if (Number.isNaN(current) && displayValue !== 'Error') return;
@@ -66,6 +76,7 @@ function App() {
     setShouldReplaceDisplay(true);
   }, [displayValue, leftOperand, pendingOperator]);
 
+  /** Clear/reset: restores display to "0" and clears any pending operation (including after Error). */
   const onClear = useCallback(() => {
     setDisplayValue('0');
     setLeftOperand(null);
@@ -79,6 +90,7 @@ function App() {
       <Calculator
         displayValue={displayValue}
         onDigit={onDigit}
+        onDecimal={onDecimal}
         onOperator={onOperator}
         onEquals={onEquals}
         onClear={onClear}

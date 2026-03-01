@@ -3,12 +3,13 @@ import { Display } from './Display';
 export type CalculatorProps = {
   displayValue: string;
   onDigit: (digit: string) => void;
+  onDecimal: () => void;
   onOperator: (op: '+' | '-' | '*' | '/') => void;
   onEquals: () => void;
   onClear: () => void;
 };
 
-// Layout: [7 8 9 +] [4 5 6 -] [1 2 3 *] [0 / = C]
+// Layout: [7 8 9 +] [4 5 6 -] [1 2 3 *] [0 . / =] [C]
 const ROW1 = [
   { type: 'digit' as const, id: '7' },
   { type: 'digit' as const, id: '8' },
@@ -29,15 +30,17 @@ const ROW3 = [
 ];
 const ROW4 = [
   { type: 'digit' as const, id: '0' },
+  { type: 'decimal' as const },
   { type: 'operator' as const, id: '/' },
   { type: 'equals' as const },
-  { type: 'clear' as const },
 ];
-const ROWS = [ROW1, ROW2, ROW3, ROW4];
+const ROW5 = [{ type: 'clear' as const }];
+const ROWS = [ROW1, ROW2, ROW3, ROW4, ROW5];
 
 export function Calculator({
   displayValue,
   onDigit,
+  onDecimal,
   onOperator,
   onEquals,
   onClear,
@@ -78,13 +81,26 @@ export function Calculator({
               </button>
             );
           }
+          if (cell.type === 'decimal') {
+            return (
+              <button
+                key={`decimal-${index}`}
+                type="button"
+                data-testid="decimal"
+                onClick={onDecimal}
+                style={buttonStyle}
+              >
+                .
+              </button>
+            );
+          }
           if (cell.type === 'operator') {
             return (
               <button
                 key={`${cell.type}-${cell.id}-${index}`}
                 type="button"
                 data-testid={`operator-${cell.id}`}
-                onClick={() => onOperator(cell.id)}
+                onClick={() => onOperator(cell.id as '+' | '-' | '*' | '/')}
                 style={{ ...buttonStyle, backgroundColor: '#b8d4e8' }}
               >
                 {cell.id === '*' ? '×' : cell.id === '/' ? '÷' : cell.id}
@@ -110,7 +126,7 @@ export function Calculator({
               type="button"
               data-testid="clear"
               onClick={onClear}
-              style={{ ...buttonStyle, backgroundColor: '#e8b8b8' }}
+              style={{ ...buttonStyle, backgroundColor: '#e8b8b8', gridColumn: '1 / -1' }}
             >
               C
             </button>
