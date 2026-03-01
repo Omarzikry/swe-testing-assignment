@@ -38,4 +38,22 @@ describe('calculator', () => {
       expect(divide(1, 2)).toBe(0.5);
     });
   });
+
+  describe('edge cases', () => {
+    it('divide by zero returns NaN', () => {
+      expect(divide(1, 0)).toBeNaN();
+      expect(divide(-5, 0)).toBeNaN();
+    });
+    it('handles negative numbers', () => {
+      expect(add(-1, 2)).toBe(1);
+      expect(subtract(-3, 1)).toBe(-4);
+      expect(multiply(-2, 3)).toBe(-6);
+      expect(divide(-10, 2)).toBe(-5);
+    });
+    it('handles decimal operands', () => {
+      expect(add(0.1, 0.2)).toBeCloseTo(0.3);
+      expect(multiply(2.5, 2)).toBe(5);
+      expect(divide(1.5, 0.5)).toBe(3);
+    });
+  });
 });
